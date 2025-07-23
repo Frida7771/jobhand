@@ -24,7 +24,7 @@ export const action =
       const userRole = userResponse.data.user.role;
       
       if (userRole === 'admin') {
-        return redirect('/admin'); // 直接跳转到admin页面
+        return redirect('/dashboard/admin'); // 直接跳转到admin页面
       } else {
         return redirect('/dashboard'); // 普通用户跳转到主仪表板
       }
