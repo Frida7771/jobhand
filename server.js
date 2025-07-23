@@ -23,6 +23,14 @@ import path from 'path';
 // middleware
 import errorHandlerMiddleware from './middleware/errorHandlerMiddleware.js';
 import { authenticateUser } from './middleware/authMiddleware.js';
+//跨域
+import cors from 'cors';
+
+app.use(cors({
+  origin: 'https://radiant-lebkuchen-1f4597.netlify.app', // 部署后可补充
+  credentials: true
+}));
+
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
@@ -80,3 +88,5 @@ try {
   console.log(error);
   process.exit(1);
 }
+
+//跨域
