@@ -13,6 +13,9 @@ import rateLimiter from 'express-rate-limit';
 import passport from '../middleware/passport.js';
 import { createJWT } from '../utils/tokenUtils.js';
 
+import { register, login, logout, debugUsers } from '../controllers/authController.js';
+
+
 const apiLimiter = rateLimiter({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 20,
@@ -22,9 +25,8 @@ const apiLimiter = rateLimiter({
 router.post('/register', apiLimiter, validateRegisterInput, register);
 router.post('/login', apiLimiter, validateLoginInput, login);
 router.get('/logout', logout);
-router.get('/login', (req, res) => {
-  res.status(200).json({ msg: 'Login endpoint (GET) - no action, use POST to login' });
-});
+router.get('/debug-users', debugUsers);
+
 
 
 //oauth routes
@@ -37,14 +39,6 @@ router.get('/google',
 
 
 
-// 在 authRouter.js 中临时添加
-router.get('/debug', (req, res) => {
-  res.json({
-    callbackURL: process.env.GOOGLE_CALLBACK_URL,
-    nodeEnv: process.env.NODE_ENV,
-    frontendURL: process.env.FRONTEND_URL
-  });
-});
 
 
 

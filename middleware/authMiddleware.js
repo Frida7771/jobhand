@@ -9,8 +9,17 @@ export const authenticateUser = (req, res, next) => {
   const { token } = req.cookies;
   if (!token) throw new UnauthenticatedError('authentication invalid');
 
+
+//debug jwt
   try {
-    const { userId, role } = verifyJWT(token);
+    const payload = verifyJWT(token);
+    console.log('=== JWT Debug ===');
+    console.log('JWT payload:', payload);
+    console.log('User ID:', payload.userId);
+    console.log('User role from JWT:', payload.role);
+    console.log('=================');
+    
+    const { userId, role } = payload;
     const testUser = userId === '64b2c07ccac2efc972ab0eca';
     req.user = { userId, role, testUser };
     next();
@@ -18,6 +27,8 @@ export const authenticateUser = (req, res, next) => {
     throw new UnauthenticatedError('authentication invalid');
   }
 };
+
+
 
 export const authorizePermissions = (...roles) => {
   return (req, res, next) => {

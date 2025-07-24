@@ -25,6 +25,27 @@ export const register = async (req, res) => {
   });
 };
 
+
+
+// 在 authController.js 中添加 调试用户信息
+export const debugUsers = async (r条是用户信息eq, res) => {
+  const users = await User.find({}, 'email role provider googleId').limit(10);
+  console.log('=== Database Users Debug ===');
+  users.forEach(user => {
+    console.log(`Email: ${user.email}, Role: ${user.role}, Provider: ${user.provider || 'local'}`);
+  });
+  console.log('============================');
+  
+  res.json({
+    message: 'Check server logs for user data',
+    userCount: users.length,
+    users: users.map(u => ({ email: u.email, role: u.role, provider: u.provider }))
+  });
+};
+
+
+
+
 export const login = async (req, res) => {
   const user = await User.findOne({ email: req.body.email });
 
