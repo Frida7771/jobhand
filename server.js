@@ -24,6 +24,13 @@ app.options('*', cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
+// 全局请求日志中间件
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`);
+  next();
+});
+
+
 
 import morgan from 'morgan';
 import mongoose from 'mongoose';
