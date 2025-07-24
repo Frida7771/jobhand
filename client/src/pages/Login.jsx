@@ -5,46 +5,49 @@ import GoogleLoginButton from '../components/GoogleLoginButton';
 import customFetch from '../utils/customFetch';
 import { toast } from 'react-toastify';
 
-export const action =
-  (queryClient) =>
-  async ({ request }) => {
-    const formData = await request.formData();
-    const data = Object.fromEntries(formData);
-    try {
-      await customFetch.post('/auth/login', data);
-      queryClient.invalidateQueries();
-      toast.success('Login successful');
-
-
-
-      
-      // 获取当前用户信息来判断角色
-    // 获取当前用户信息来判断角色
-try {
-  console.log('Fetching user role...');
-  const userResponse = await customFetch.get('/users/current-user');
-  console.log('Full user response:', userResponse.data);
-  console.log('User object:', userResponse.data.user);
-  const userRole = userResponse.data.user.role;
-  console.log('Extracted role:', userRole);
+export const action = (queryClient) => async ({ request }) => {
+  const formData = await request.formData();
+  const data = Object.fromEntries(formData);
   
-  if (userRole === 'admin') {
-    console.log('Redirecting to admin dashboard');
-    return redirect('/dashboard/admin');
-  } else {
-    console.log('Redirecting to user dashboard');
-    return redirect('/dashboard');
-  }
-} catch (error) {
-  console.error('Error fetching user role:', error);
-  toast.error('Failed to fetch user role');
-  return redirect('/dashboard');
-}
+  try {
+    await customFetch.post('/auth/login', data);
+    
+    // 🔥 关键修复：清除所有缓存
+    queryClient.clear();
+    queryClient.invalidateQueries();
+    
+    toast.success('Login successful');
+
+    // 短暂延迟，确保缓存清除完成
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+    // 获取当前用户信息来判断角色
+    try {
+      console.log('Fetching user role...');
+      const userResponse = await customFetch.get('/users/current-user');
+      console.log('Full user response:', userResponse.data);
+      console.log('User object:', userResponse.data.user);
+      const userRole = userResponse.data.user.role;
+      console.log('Extracted role:', userRole);
+      
+      if (userRole === 'admin') {
+        console.log('Redirecting to admin dashboard');
+        return redirect('/dashboard/admin');
+      } else {
+        console.log('Redirecting to user dashboard');
+        return redirect('/dashboard');
+      }
     } catch (error) {
-      toast.error(error?.response?.data?.msg);
-      return error;
+      console.error('Error fetching user role:', error);
+      toast.error('Failed to fetch user role');
+      return redirect('/dashboard');
     }
-  };
+    
+  } catch (error) {
+    toast.error(error?.response?.data?.msg);
+    return error;
+  }
+};
 
 const Login = () => {
   const navigate = useNavigate();
