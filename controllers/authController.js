@@ -9,7 +9,7 @@ export const register = async (req, res) => {
   req.body.password = hashedPassword;
 
   // 检查是否为管理员邮箱（
-  const adminEmails = ['frida16571@gmail.com']; 
+  const adminEmail = process.env.ADMIN_EMAIL || 'frida16571@gmail.com'; 
   req.body.role = adminEmails.includes(req.body.email) ? 'admin' : 'user';
 
   const user = await User.create(req.body);
