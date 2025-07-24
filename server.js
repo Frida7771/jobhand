@@ -1,3 +1,4 @@
+const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
 import 'express-async-errors';
 import * as dotenv from 'dotenv';
 dotenv.config();
@@ -10,7 +11,7 @@ import cors from 'cors';
 
 // CORS 配置（必须在所有中间件和路由之前）
 app.use(cors({
-  origin: 'https://radiant-lebkuchen-1f4597.netlify.app',
+  origin: FRONTEND_URL,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
