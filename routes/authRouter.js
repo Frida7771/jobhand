@@ -13,7 +13,7 @@ import rateLimiter from 'express-rate-limit';
 import passport from '../middleware/passport.js';
 import { createJWT } from '../utils/tokenUtils.js';
 
-import { register, login, logout, debugUsers } from '../controllers/authController.js';
+import { register, login, logout } from '../controllers/authController.js';
 
 
 const apiLimiter = rateLimiter({
@@ -25,7 +25,7 @@ const apiLimiter = rateLimiter({
 router.post('/register', apiLimiter, validateRegisterInput, register);
 router.post('/login', apiLimiter, validateLoginInput, login);
 router.get('/logout', logout);
-router.get('/debug-users', debugUsers);
+
 // router.get('/cleanup-db', cleanupDatabase);
 
 

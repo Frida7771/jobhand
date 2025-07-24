@@ -19,21 +19,27 @@ export const action =
 
       
       // 获取当前用户信息来判断角色
-    try {
-      const userResponse = await customFetch.get('/users/current-user');
-      const userRole = userResponse.data.user.role;
-      
-      if (userRole === 'admin') {
-        return redirect('/dashboard/admin'); // 直接跳转到admin页面
-      } else {
-        return redirect('/dashboard'); // 普通用户跳转到主仪表板
-      }
-    }
-      catch (error) {
-        toast.error('Failed to fetch user role');
-        return redirect('/dashboard'); // 如果获取用户角色失败，默认跳转到主仪表板
-      }
-
+    // 获取当前用户信息来判断角色
+try {
+  console.log('Fetching user role...');
+  const userResponse = await customFetch.get('/users/current-user');
+  console.log('Full user response:', userResponse.data);
+  console.log('User object:', userResponse.data.user);
+  const userRole = userResponse.data.user.role;
+  console.log('Extracted role:', userRole);
+  
+  if (userRole === 'admin') {
+    console.log('Redirecting to admin dashboard');
+    return redirect('/dashboard/admin');
+  } else {
+    console.log('Redirecting to user dashboard');
+    return redirect('/dashboard');
+  }
+} catch (error) {
+  console.error('Error fetching user role:', error);
+  toast.error('Failed to fetch user role');
+  return redirect('/dashboard');
+}
     } catch (error) {
       toast.error(error?.response?.data?.msg);
       return error;
