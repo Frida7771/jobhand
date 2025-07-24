@@ -11,35 +11,20 @@ export const authenticateUser = async (req, res, next) => {
   if (!token) throw new UnauthenticatedError('authentication invalid');
 
   try {
-    const payload = verifyJWT(token);
-    console.log('=== JWT Debug ===');
-    console.log('JWT payload:', payload);
-    console.log('User ID:', payload.userId);
-    console.log('User role from JWT:', payload.role);
-    
-    const { userId } = payload;
+    const { userId } = verifyJWT(token);
     
     // 🔥 关键修复：从数据库获取最新的用户信息
     const user = await User.findById(userId).select('role email');
     if (!user) throw new UnauthenticatedError('user not found');
     
-    console.log('User from database:', { email: user.email, role: user.role });
-    
     // 确保角色正确性
     const adminEmail = process.env.ADMIN_EMAIL || 'frida16571@gmail.com';
     const actualRole = user.email === adminEmail ? 'admin' : 'user';
     
-    console.log('Admin email:', adminEmail);
-    console.log('Is admin?', user.email === adminEmail);
-    console.log('Final role:', actualRole);
-    console.log('=================');
-    
-    const testUser = userId === '64b2c07ccac2efc972ab0eca';
-    req.user = { userId, role: actualRole, testUser };
+    req.user = { userId, role: actualRole, testUser: userId === '64b2c07ccac2efc972ab0eca' };
     
     next();
   } catch (error) {
-    console.error('Authentication error:', error);
     throw new UnauthenticatedError('authentication invalid');
   }
 };
