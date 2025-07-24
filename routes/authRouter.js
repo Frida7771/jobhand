@@ -1,7 +1,7 @@
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
 import { Router } from 'express';
 const router = Router();
-import { login, logout, register } from '../controllers/authController.js';
+
 import {
   validateRegisterInput,
   validateLoginInput,
