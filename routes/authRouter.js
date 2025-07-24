@@ -71,6 +71,8 @@ router.get('/google/callback',
         httpOnly: true,
         expires: new Date(Date.now() + oneDay),
         secure: process.env.NODE_ENV === 'production',
+        //set sameSite to none in production
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
       });
       
       console.log('JWT token generated for Google user');
