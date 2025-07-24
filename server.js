@@ -3,9 +3,12 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 import express from 'express';
 const app = express();
-
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+import path from 'path';
 import cors from 'cors';
 
+// CORS 配置（必须在所有中间件和路由之前）
 app.use(cors({
   origin: 'https://radiant-lebkuchen-1f4597.netlify.app',
   credentials: true,
@@ -21,23 +24,16 @@ import helmet from 'helmet';
 import mongoSanitize from 'express-mongo-sanitize';
 import passport from './middleware/passport.js';
 
-// routers
+// Routers
 import jobRouter from './routes/jobRouter.js';
 import authRouter from './routes/authRouter.js';
 import userRouter from './routes/userRouter.js';
-// public
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
-import path from 'path';
 
-// middleware
+// Middleware
 import errorHandlerMiddleware from './middleware/errorHandlerMiddleware.js';
 import { authenticateUser } from './middleware/authMiddleware.js';
-//跨域
 
-
-
-
+// 配置 cloudinary
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
   api_key: process.env.CLOUD_API_KEY,
@@ -49,16 +45,17 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
-//注释静态服务
-// app.use(express.static(path.resolve(__dirname, './client/dist')));
+// 这些中间件要放在路由挂载之前
 app.use(cookieParser());
 app.use(express.json());
 app.use(helmet());
 app.use(mongoSanitize());
-
-// 新增：Passport 中间件初始化
 app.use(passport.initialize());
 
+// 路由挂载
+app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/jobs', authenticateUser, jobRouter);
+app.use('/api/v1/users', authenticateUser, userRouter);
 
 app.get('/', (req, res) => {
   res.send('Hello World');
@@ -68,15 +65,7 @@ app.get('/api/v1/test', (req, res) => {
   res.json({ msg: 'test route' });
 });
 
-app.use('/api/v1/jobs', authenticateUser, jobRouter);
-app.use('/api/v1/users', authenticateUser, userRouter);
-app.use('/api/v1/auth', authRouter);
-
-//注释静态服务
-// app.get('*', (req, res) => {
-//   res.sendFile(path.resolve(__dirname, './client/dist', 'index.html'));
-// });
-
+// 404
 app.use('*', (req, res) => {
   res.status(404).json({ msg: 'not found' });
 });
@@ -94,5 +83,3 @@ try {
   console.log(error);
   process.exit(1);
 }
-
-//跨域
