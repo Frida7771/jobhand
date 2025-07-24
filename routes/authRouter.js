@@ -1,3 +1,4 @@
+const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
 import { Router } from 'express';
 const router = Router();
 import { login, logout, register } from '../controllers/authController.js';
@@ -34,7 +35,7 @@ router.get('/google',
 
 router.get('/google/callback',
   passport.authenticate('google', { 
-    failureRedirect: 'http://localhost:5173/login?error=oauth_failed',
+    failureRedirect: `${FRONTEND_URL}/login?error=oauth_failed`,
     session: false // 使用JWT，不需要session
   }),
   async (req, res) => {
@@ -59,18 +60,18 @@ router.get('/google/callback',
       
        if (req.user.role === 'admin') {
         console.log('Redirecting admin to admin dashboard');
-        res.redirect('http://localhost:5173/dashboard/admin');
+        res.redirect(`${FRONTEND_URL}/dashboard/admin`);
       } 
       
       else {
         console.log('Redirecting user to regular dashboard');
-        res.redirect('http://localhost:5173/dashboard');
+        res.redirect(`${FRONTEND_URL}/dashboard`);
       }
     } 
     
     catch (error) {
       console.error('OAuth callback error:', error);
-      res.redirect('http://localhost:5173/login?error=oauth_callback_failed');
+      res.redirect(`${FRONTEND_URL}/login?error=oauth_callback_failed`);
     }
   }
 );
