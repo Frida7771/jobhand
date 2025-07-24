@@ -22,7 +22,9 @@ const apiLimiter = rateLimiter({
 router.post('/register', apiLimiter, validateRegisterInput, register);
 router.post('/login', apiLimiter, validateLoginInput, login);
 router.get('/logout', logout);
-
+router.get('/login', (req, res) => {
+  res.status(200).json({ msg: 'Login endpoint (GET) - no action, use POST to login' });
+});
 
 
 //oauth routes
@@ -32,6 +34,21 @@ router.get('/google',
     scope: ['profile', 'email'] 
   })
 );
+
+
+
+// 在 authRouter.js 中临时添加
+router.get('/debug', (req, res) => {
+  res.json({
+    callbackURL: process.env.GOOGLE_CALLBACK_URL,
+    nodeEnv: process.env.NODE_ENV,
+    frontendURL: process.env.FRONTEND_URL
+  });
+});
+
+
+
+
 
 router.get('/google/callback',
   passport.authenticate('google', { 

@@ -69,6 +69,15 @@ app.use(mongoSanitize());
 app.use(passport.initialize());
 
 // 路由挂载
+//测试路由
+app.get('/api', (req, res) => {
+  res.json({ msg: 'API is working' });
+});
+
+app.get('/api/v1', (req, res) => {
+  res.json({ msg: 'API v1 is working' });
+});
+
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/jobs', authenticateUser, jobRouter);
 app.use('/api/v1/users', authenticateUser, userRouter);
