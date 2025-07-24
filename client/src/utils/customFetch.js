@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const customFetch = axios.create({
-  baseURL: 'https://jobhand.onrender.com/api/v1',
+  baseURL: import.meta.env.VITE_API_URL,
   withCredentials: true, // 关键
 });
 
