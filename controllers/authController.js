@@ -8,9 +8,9 @@ export const register = async (req, res) => {
   const hashedPassword = await hashPassword(req.body.password);
   req.body.password = hashedPassword;
 
-  // 检查是否为管理员邮箱（
+  // 检查是否为管理员邮箱
   const adminEmail = process.env.ADMIN_EMAIL || 'frida16571@gmail.com'; 
-  req.body.role = adminEmails.includes(req.body.email) ? 'admin' : 'user';
+  req.body.role = req.body.email === adminEmail ? 'admin' : 'user'; // 修复：应该是相等比较
 
   const user = await User.create(req.body);
   console.log(`New user registered: ${req.body.email}, role: ${req.body.role}`);
@@ -24,7 +24,6 @@ export const register = async (req, res) => {
     }
   });
 };
-
 
 export const cleanupDatabase = async (req, res) => {
   const adminEmail = process.env.ADMIN_EMAIL || 'frida16571@gmail.com';
@@ -61,10 +60,8 @@ export const cleanupDatabase = async (req, res) => {
   }
 };
 
-
-
-// 在 authController.js 中添加 调试用户信息
-export const debugUsers = async (r条是用户信息eq, res) => {
+// 调试用户信息
+export const debugUsers = async (req, res) => { // 修复：正确的参数
   const users = await User.find({}, 'email role provider googleId').limit(10);
   console.log('=== Database Users Debug ===');
   users.forEach(user => {
@@ -78,9 +75,6 @@ export const debugUsers = async (r条是用户信息eq, res) => {
     users: users.map(u => ({ email: u.email, role: u.role, provider: u.provider }))
   });
 };
-
-
-
 
 export const login = async (req, res) => {
   const user = await User.findOne({ email: req.body.email });
