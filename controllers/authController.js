@@ -26,6 +26,42 @@ export const register = async (req, res) => {
 };
 
 
+export const cleanupDatabase = async (req, res) => {
+  const adminEmail = process.env.ADMIN_EMAIL || 'frida16571@gmail.com';
+  
+  try {
+    // 修复所有非管理员用户的角色
+    const result = await User.updateMany(
+      { 
+        email: { $ne: adminEmail }, 
+        role: 'admin' 
+      },
+      { 
+        $set: { role: 'user' } 
+      }
+    );
+    
+    // 确保管理员邮箱的角色正确
+    await User.updateOne(
+      { email: adminEmail },
+      { $set: { role: 'admin' } },
+      { upsert: false }
+    );
+    
+    console.log(`Database cleanup completed. Fixed ${result.modifiedCount} users.`);
+    
+    res.json({ 
+      success: true,
+      message: 'Database cleanup completed',
+      fixedUsers: result.modifiedCount 
+    });
+  } catch (error) {
+    console.error('Database cleanup error:', error);
+    res.status(500).json({ error: 'Cleanup failed' });
+  }
+};
+
+
 
 // 在 authController.js 中添加 调试用户信息
 export const debugUsers = async (r条是用户信息eq, res) => {

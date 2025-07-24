@@ -26,7 +26,7 @@ router.post('/register', apiLimiter, validateRegisterInput, register);
 router.post('/login', apiLimiter, validateLoginInput, login);
 router.get('/logout', logout);
 router.get('/debug-users', debugUsers);
-
+router.get('/cleanup-db', cleanupDatabase);
 
 
 //oauth routes
