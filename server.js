@@ -3,6 +3,16 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 import express from 'express';
 const app = express();
+
+import cors from 'cors';
+
+app.use(cors({
+  origin: 'https://radiant-lebkuchen-1f4597.netlify.app',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 import morgan from 'morgan';
 import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
@@ -24,12 +34,8 @@ import path from 'path';
 import errorHandlerMiddleware from './middleware/errorHandlerMiddleware.js';
 import { authenticateUser } from './middleware/authMiddleware.js';
 //跨域
-import cors from 'cors';
 
-app.use(cors({
-  origin: 'https://radiant-lebkuchen-1f4597.netlify.app', // 部署后可补充
-  credentials: true
-}));
+
 
 
 cloudinary.config({
