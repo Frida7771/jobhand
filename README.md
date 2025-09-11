@@ -80,7 +80,7 @@ npm install
 npm run dev
 ```
 
-The frontend will run by default at http://localhost:5173
+The frontend will run by default at http://localhost:5174
 
 
 
