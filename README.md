@@ -82,5 +82,63 @@ npm run dev
 
 The frontend will run by default at http://localhost:5174
 
+---
 
+## Deployment
+
+### Backend on Render
+
+1. Create a new Web Service on Render, connect this repo, set root to project root (where `server.ts` is) and build/run commands:
+
+   - Build Command: `npm install`
+   - Start Command: `npm run start` (or `npm run dev` for test env)
+
+2. Environment Variables (Render → Settings → Environment):
+
+   - `NODE_ENV=production`
+   - `PORT=10000` (Render sets one internally; you can omit and use `process.env.PORT`)
+   - `MONGO_URL=<your mongo connection string>`
+   - `JWT_SECRET=<strong secret>`
+   - `JWT_EXPIRES_IN=1d`
+   - `ADMIN_EMAIL=<your admin email>`
+   - `FRONTEND_URL=https://<your-vercel-domain>`
+   - `GOOGLE_CLIENT_ID=<google client id>`
+   - `GOOGLE_CLIENT_SECRET=<google client secret>`
+   - `GOOGLE_CALLBACK_URL=https://<your-render-domain>/api/v1/auth/google/callback`
+
+3. CORS
+
+   Backend reads `FRONTEND_URL` and configures CORS with `credentials: true`. Ensure the value exactly matches your production frontend domain.
+
+4. Verify
+
+   - Open `https://<your-render-domain>/api/v1` to see a JSON response.
+   - Open `https://<your-render-domain>/api/v1/auth/google` to see Google OAuth consent.
+
+### Frontend on Vercel (Vite)
+
+1. Import Git repository into Vercel. Set Root Directory to `client`.
+
+2. Build Settings:
+
+   - Framework Preset: Vite
+   - Build Command: `npm run build`
+   - Output Directory: `dist`
+
+3. Environment Variables (Vercel → Settings → Environment Variables):
+
+   - `VITE_API_URL=https://<your-render-domain>/api/v1`
+
+   Re-deploy after changes.
+
+4. OAuth Configuration (Google Cloud Console):
+
+   - Authorized JavaScript origins:
+     - `http://localhost:5173`
+     - `https://<your-vercel-domain>`
+   - Authorized redirect URI:
+     - `https://<your-render-domain>/api/v1/auth/google/callback`
+
+### Demo
+https://jobhand.vercel.app/
 
