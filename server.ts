@@ -33,15 +33,25 @@ const app = express();
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5174';
 
 // CORS
-app.use(
-  cors({
-    origin: FRONTEND_URL,
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-  })
-);
-app.options('*', cors());
+const allowedOrigins = [
+  FRONTEND_URL,
+  'http://localhost:5173',
+  'http://localhost:5174',
+];
+
+const corsConfig = {
+  origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+    if (!origin) return callback(null, true); // allow non-browser or same-origin
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error(`CORS: Origin ${origin} not allowed`));
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+} as const;
+
+app.use(cors(corsConfig));
+app.options('*', cors(corsConfig));
 
 // Logger middleware
 app.use((req: Request, res: Response, next: NextFunction) => {
