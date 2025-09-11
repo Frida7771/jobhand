@@ -13,7 +13,7 @@ if (!JWT_SECRET) {
 }
 
 export const createJWT = (payload: TokenPayload): string => {
-  const token = jwt.sign(payload, JWT_SECRET, {
+  const token = jwt.sign(payload, JWT_SECRET as jwt.Secret, {
     expiresIn: JWT_EXPIRES_IN || '30d',
   });
   return token;

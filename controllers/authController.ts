@@ -61,6 +61,7 @@ export const login = async (req: LoginRequest, res: Response): Promise<void> => 
     httpOnly: true,
     expires: new Date(Date.now() + oneDay),
     secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
   });
 
   console.log(`User logged in: ${user.email}, role: ${user.role}`);

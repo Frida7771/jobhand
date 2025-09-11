@@ -35,11 +35,22 @@ const Admin = () => {
     
     setLoading(true);
     try {
+      console.log('Fetching all users...');
       const response = await customFetch.get('/users/admin/all-users');
+      console.log('Users response:', response.data);
       setAllUsers(response.data.users || []);
-    } catch (error) {
-      toast.error('Failed to fetch users');
+    } catch (error: any) {
       console.error('Error fetching users:', error);
+      console.error('Error status:', error?.response?.status);
+      console.error('Error data:', error?.response?.data);
+      
+      if (error?.response?.status === 401) {
+        toast.error('Authentication failed. Please log in again.');
+      } else if (error?.response?.status === 403) {
+        toast.error('You do not have permission to view all users.');
+      } else {
+        toast.error('Failed to fetch users');
+      }
     } finally {
       setLoading(false);
     }
@@ -51,11 +62,22 @@ const Admin = () => {
     
     setLoading(true);
     try {
+      console.log('Fetching all jobs...');
       const response = await customFetch.get('/jobs/admin/all-jobs');
+      console.log('Jobs response:', response.data);
       setAllJobs(response.data.jobs || []);
-    } catch (error) {
-      toast.error('Failed to fetch jobs');
+    } catch (error: any) {
       console.error('Error fetching jobs:', error);
+      console.error('Error status:', error?.response?.status);
+      console.error('Error data:', error?.response?.data);
+      
+      if (error?.response?.status === 401) {
+        toast.error('Authentication failed. Please log in again.');
+      } else if (error?.response?.status === 403) {
+        toast.error('You do not have permission to view all jobs.');
+      } else {
+        toast.error('Failed to fetch jobs');
+      }
     } finally {
       setLoading(false);
     }
