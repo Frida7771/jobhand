@@ -149,15 +149,6 @@ The frontend will run by default at http://localhost:5174
    - Authorized redirect URI:
      - `https://<your-render-domain>/api/v1/auth/google/callback`
 
-### End-to-end Checklist
-
-- [ ] Render 后端可访问：`/api/v1` 返回 JSON
-- [ ] Vercel 前端环境变量 `VITE_API_URL` 指向 `https://<render>/api/v1`
-- [ ] Render 设置 `FRONTEND_URL=https://<vercel>`，CORS 通过
-- [ ] 登录后响应包含 `Set-Cookie: token=...; Secure; SameSite=None; HttpOnly`
-- [ ] 前端已添加 `vercel.json` 重写规则，深链接不 404
-
->>>>>>> 6f81604 (Update vercel.json)
 
 ## Deployment
 
