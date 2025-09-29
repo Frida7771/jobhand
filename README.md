@@ -82,9 +82,6 @@ npm run dev
 
 The frontend will run by default at http://localhost:5174
 
----
-<<<<<<< HEAD
-=======
 
 ## Deployment
 
